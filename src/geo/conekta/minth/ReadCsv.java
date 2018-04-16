@@ -36,13 +36,17 @@ public class ReadCsv {
             HSSFSheet sheet = hwb.createSheet("new sheet");
             for(int k=0;k<arList.size();k++)
             {
-                ArrayList ardata = (ArrayList)arList.get(k);
+            	String myLine= arList.get(k).toString();
+            	
+            	String data[] = myLine.split(",");
+            	
+            	//ArrayList ardata = (ArrayList);
                 HSSFRow row = sheet.createRow((short) 0+k);
-                for(int p=0;p<ardata.size();p++)
+                for(int p=0;p<data.length;p++)
                 {
                     HSSFCell cell = row.createCell((short) p);
-                    String data = ardata.get(p).toString();
-                    if(data.startsWith("=")){
+                    //String data = ardata.get(p).toString();
+                    /*if(data.startsWith("=")){
                         cell.setCellType(Cell.CELL_TYPE_STRING);
                         data=data.replaceAll("\"", "");
                         data=data.replaceAll("=", "");
@@ -57,12 +61,12 @@ public class ReadCsv {
                         cell.setCellValue(data);
                     }
                     //*/
-                    cell.setCellValue(ardata.get(p).toString());
+                    cell.setCellValue(data[p]);
                 }
             }
             
             myFecha = new Date();
-    		SimpleDateFormat ft2 = new SimpleDateFormat ("YYYY_MM_DD_HHmmss"); //Extracto_YYYY_MM_DD_HHmmss
+    		SimpleDateFormat ft2 = new SimpleDateFormat ("YYYY_MM_DD_HHmmss"); 
     		ft2.format(myFecha);
     		String fileN="\\Extracto_"+ft2.format(myFecha)+".xls";
             FileOutputStream fileOut = new FileOutputStream(myPath+fileN);
@@ -81,18 +85,23 @@ public class ReadCsv {
     }
 
     public static void LeerD(String directorio) throws Exception{
+
     	int count=0;
-    	int countSize=0;
-		File f = new File(directorio);
-		File[] ficheros = f.listFiles();
-        ArrayList al = null;
+    	int countSize=0;  	
+    	final String extension = ".csv";	
+    	File f = new File(directorio);
+		File[] ficheros = f.listFiles((File pathname) -> pathname.getName().endsWith(extension));
+        ArrayList al = new ArrayList();
+        String myLine=null;
         int i=0;
+        //añade la cabecera
+        arList.add("par de torsión perno_exterior_izq,ángulo perno_exterior_izq,par de torsión perno_interior_izq,ángulo perno_interior_izq,par de torsión perno_interior_drch,ángulo perno_interior_drch,par de torsión perno_exterior_drch,ángulo perno_exterior_drch,ruta archivo");
         for (int x = 0; x < ficheros.length; x++) {
 			if (ficheros[x].isDirectory()) {
 				System.out.println(ficheros[x].getName());
 				LeerD(ficheros[x].getPath());
 			} else {
-				System.out.println(ficheros[x].getName() +"peso: "+ficheros[x].length());
+				System.out.println(ficheros[x].getName() +" peso: "+ficheros[x].length());
 				count++;
 				countSize=countSize+ (int) (ficheros[x].length());        	
 	            MainForm.setLabelFile(ficheros[x].getAbsolutePath());
@@ -103,18 +112,42 @@ public class ReadCsv {
 		        DataInputStream myInput = new DataInputStream(fis);
 		        while ((thisLine = myInput.readLine()) != null)
 		        {
-		            al = new ArrayList();
+		            
 		            String strar[] = thisLine.split(";");
-		            System.out.println(thisLine);
-		            for(int j=0;j<strar.length;j++)
-		            {
-		                al.add(strar[j]);
+		               //usar astring y split
+		            if (strar[0].equals("par de torsión perno_exterior_izq")) {
+		            	myLine=strar[1]+",";
 		            }
-		            arList.add(al);
+		            if (strar[0].equals("ángulo perno_exterior_izq")) {
+			            myLine=myLine+strar[1]+",";
+		            }
+		            if (strar[0].equals("par de torsión perno_interior_izq")) {
+		            	myLine=myLine+strar[1]+",";
+		            }
+		            if (strar[0].equals("ángulo perno_interior_izq")) {
+		            	myLine=myLine+strar[1]+",";
+		            }
+		            if (strar[0].equals("par de torsión perno_interior_drch")) {
+		            	myLine=myLine+strar[1]+",";
+		            }
+		            if (strar[0].equals("ángulo perno_interior_drch")) {
+		            	myLine=myLine+strar[1]+",";
+		            }
+		            if (strar[0].equals("par de torsión perno_exterior_drch")) {
+		            	myLine=myLine+strar[1]+",";
+		            }
+		            if (strar[0].equals("ángulo perno_exterior_drch")) {
+		            	myLine=myLine+strar[1]+",";
+		            }
+		            
 		            i++;
 		        }
+		       myLine = myLine + ficheros[x].getAbsolutePath() +",";
 			}
-		}
+	        arList.add(myLine);        
+	        //al.clear();
+        }
+        
         statuslog=statuslog + "\n "+count+" Archivos Correctos - Tamaño: "+countSize+ " Bytes";
    }
 }
