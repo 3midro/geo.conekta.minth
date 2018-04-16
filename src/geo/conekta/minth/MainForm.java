@@ -4,6 +4,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -26,11 +27,10 @@ public class MainForm {
 
 	protected Shell shlExtraerTorqueY;
 	private Text txtExtraerDe;
-	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private Display display = Display.getDefault();
-	private JFileChooser chooser = new JFileChooser();
+	private JFileChooser chooser = new JFileChooser("C:\\csv2extract");
 	public static Label myOutput;
-	public static Text text;
+	public static Text text1;
 	public static ProgressBar progressBar1;
 	
 	String myPath=null;
@@ -74,12 +74,12 @@ public class MainForm {
 		txtExtraerDe = new Text(shlExtraerTorqueY, SWT.BORDER);
 		txtExtraerDe.setEditable(false);
 		txtExtraerDe.setEnabled(false);
-		txtExtraerDe.setText("");
-		txtExtraerDe.setBounds(136, 38, 316, 21);
+		txtExtraerDe.setText("C:/csv2Extract");
+		txtExtraerDe.setBounds(75, 38, 336, 21);
 		
 		Label lblNewLabel = new Label(shlExtraerTorqueY, SWT.NONE);
 		lblNewLabel.setBounds(34, 41, 55, 15);
-		lblNewLabel.setText("Extraer de :");
+		lblNewLabel.setText("Ruta");
 		
 		ScrolledComposite scrolledComposite = new ScrolledComposite(shlExtraerTorqueY, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		scrolledComposite.setToolTipText("Current action");
@@ -88,7 +88,19 @@ public class MainForm {
 		scrolledComposite.setExpandVertical(true);
 
 		Button btnProcesar = new Button(shlExtraerTorqueY, SWT.NONE);
-		btnProcesar.setEnabled(false);
+		//crea el directorio csv2extract si no existe
+		try {
+			File folder = new File("c:\\csv2extract\\");
+			folder.mkdirs(); 
+		} catch(SecurityException e){
+			//no tiene acceso a la unidad C: le pide al usuario que cambie o seleccione una ruta
+			btnProcesar.setEnabled(false);
+			System.out.println(e);
+        }
+		
+		
+		
+//		btnProcesar.setEnabled(true);
 
 		Button btnCambiarRuta = new Button(shlExtraerTorqueY, SWT.NONE);
 		btnCambiarRuta.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,1,0));
@@ -97,7 +109,8 @@ public class MainForm {
 			public void widgetSelected(SelectionEvent e) {
 				
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			    Integer returnVal = chooser.showSaveDialog(null);
+				chooser.setDialogTitle("Seleccione un directorio");
+			    Integer returnVal = chooser.showOpenDialog(null);
 			    if(returnVal == JFileChooser.APPROVE_OPTION) {
 			    	myPath=chooser.getSelectedFile().getPath();
 			    	txtExtraerDe.setText(myPath);
@@ -106,19 +119,20 @@ public class MainForm {
 			    }
 			}
 		});
-		btnCambiarRuta.setBounds(95, 36, 35, 25);
+		btnCambiarRuta.setBounds(417, 36, 35, 25);
 		btnCambiarRuta.setText("...");
 		
         progressBar1 = new ProgressBar(shlExtraerTorqueY, SWT.NULL);
         progressBar1.setMinimum(0);
         progressBar1.setMaximum(100);
         progressBar1.setSelection(0);
-        progressBar1.setBounds(365, 240, 107, 21);
+        progressBar1.setBounds(337, 272, 115, 21);
 		
 		btnProcesar.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				myPath=chooser.getSelectedFile().getPath();
+				//myPath=chooser.getSelectedFile().getPath();
+				myPath = txtExtraerDe.getText();
 				if (myPath == null)
 				{
 				    Shell shell = new Shell();
@@ -146,20 +160,20 @@ public class MainForm {
 		
 		Label lblLog = new Label(shlExtraerTorqueY, SWT.NONE);
 		lblLog.setBounds(34, 76, 35, 15);
-		lblLog.setText("Log:");
+		lblLog.setText("Log");
 		
 
 		
 		Label lblArchivoLeido = new Label(shlExtraerTorqueY, SWT.NONE);
-		lblArchivoLeido.setBounds(33, 242, 79, 15);
-		lblArchivoLeido.setText("Archivo Leido: ");
+		lblArchivoLeido.setBounds(14, 278, 55, 15);
+		lblArchivoLeido.setText("Abriendo");
 		
-		text = new Text(shlExtraerTorqueY, SWT.BORDER);
-		text.setBounds(118, 240, 241, 21);
+		text1 = new Text(shlExtraerTorqueY, SWT.BORDER);
+		text1.setBounds(89, 272, 242, 21);
 		
 		Button btnSalir = new Button(shlExtraerTorqueY, SWT.NONE);
-		btnSalir.setBounds(478, 238, 55, 25);
-		btnSalir.setText("Salir");
+		btnSalir.setBounds(458, 272, 76, 25);
+		btnSalir.setText("Cancelar");
 		
 
 
@@ -172,7 +186,7 @@ public class MainForm {
 	
 	public static void setLabelFile(String txt)
 	{
-		text.setText(txt);
+		text1.setText(txt);
 	}
 	
 	public static void setPBMax(int num)
