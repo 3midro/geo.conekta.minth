@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.Cell;
 public class ReadCsv {
     static ArrayList arList = null;
     static String statuslog;
+    static int progressC;
 
     public void processCsv(String myPath) throws Exception
     {
@@ -32,35 +33,17 @@ public class ReadCsv {
         //Excel
         try
         {
-            HSSFWorkbook hwb = new HSSFWorkbook();
+			MainForm.setPBSel(progressC+1);
+        	HSSFWorkbook hwb = new HSSFWorkbook();
             HSSFSheet sheet = hwb.createSheet("new sheet");
             for(int k=0;k<arList.size();k++)
             {
-            	String myLine= arList.get(k).toString();
-            	
+            	String myLine= arList.get(k).toString();            	
             	String data[] = myLine.split(",");
-            	
-            	//ArrayList ardata = (ArrayList);
                 HSSFRow row = sheet.createRow((short) 0+k);
                 for(int p=0;p<data.length;p++)
                 {
                     HSSFCell cell = row.createCell((short) p);
-                    //String data = ardata.get(p).toString();
-                    /*if(data.startsWith("=")){
-                        cell.setCellType(Cell.CELL_TYPE_STRING);
-                        data=data.replaceAll("\"", "");
-                        data=data.replaceAll("=", "");
-                        cell.setCellValue(data);
-                    }else if(data.startsWith("\"")){
-                        data=data.replaceAll("\"", "");
-                        cell.setCellType(Cell.CELL_TYPE_STRING);
-                        cell.setCellValue(data);
-                    }else{
-                        data=data.replaceAll("\"", "");
-                        cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-                        cell.setCellValue(data);
-                    }
-                    //*/
                     cell.setCellValue(data[p]);
                 }
             }
@@ -77,6 +60,7 @@ public class ReadCsv {
             statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
             statuslog=statuslog + "\nArchivo generado: "+fileN;
             MainForm.setLabelText(statuslog);
+            MainForm.setPBSel(progressC+2);
             
         } catch ( Exception ex ) {
             ex.printStackTrace();
@@ -91,6 +75,8 @@ public class ReadCsv {
     	final String extension = ".csv";	
     	File f = new File(directorio);
 		File[] ficheros = f.listFiles((File pathname) -> pathname.getName().endsWith(extension));
+		progressC=ficheros.length+2;
+		MainForm.setPBMax(progressC);
         ArrayList al = new ArrayList();
         String myLine=null;
         int i=0;
@@ -102,6 +88,7 @@ public class ReadCsv {
 				LeerD(ficheros[x].getPath());
 			} else {
 				System.out.println(ficheros[x].getName() +" peso: "+ficheros[x].length());
+				MainForm.setPBSel(x+1);
 				count++;
 				countSize=countSize+ (int) (ficheros[x].length());        	
 	            MainForm.setLabelFile(ficheros[x].getAbsolutePath());
@@ -142,10 +129,12 @@ public class ReadCsv {
 		            
 		            i++;
 		        }
-		       myLine = myLine + ficheros[x].getAbsolutePath() +",";
+		       if (!myLine.equals(""))
+		        	myLine = myLine + ficheros[x].getAbsolutePath() +",";
 			}
-	        arList.add(myLine);        
-	        //al.clear();
+			if (!myLine.equals(""))
+				arList.add(myLine);  
+	        myLine="";
         }
         
         statuslog=statuslog + "\n "+count+" Archivos Correctos - Tamaño: "+countSize+ " Bytes";

@@ -130,14 +130,24 @@ public class MainForm {
 		
         progressBar1 = new ProgressBar(shlExtraerTorqueY, SWT.NULL);
         progressBar1.setMinimum(0);
-        progressBar1.setMaximum(100);
-        progressBar1.setSelection(0);
+        progressBar1.setVisible(false);
+        //progressBar1.setSelection(0);
         progressBar1.setBounds(337, 272, 115, 21);
+        
+		Label lblArchivoLeido = new Label(shlExtraerTorqueY, SWT.NONE);
+		lblArchivoLeido.setBounds(14, 278, 55, 15);
+		lblArchivoLeido.setText("Abriendo");
+		lblArchivoLeido.setVisible(false);
 		
 		btnProcesar.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				//myPath=chooser.getSelectedFile().getPath();
+				
+				progressBar1.setVisible(true);
+				text1.setVisible(true);
+				lblArchivoLeido.setVisible(true);
+				
 				myPath = txtExtraerDe.getText();
 				if (myPath == null)
 				{
@@ -170,12 +180,11 @@ public class MainForm {
 		
 
 		
-		Label lblArchivoLeido = new Label(shlExtraerTorqueY, SWT.NONE);
-		lblArchivoLeido.setBounds(14, 278, 55, 15);
-		lblArchivoLeido.setText("Abriendo");
+
 		
 		text1 = new Text(shlExtraerTorqueY, SWT.BORDER);
 		text1.setBounds(89, 272, 242, 21);
+		text1.setVisible(false);
 		
 		Button btnSalir = new Button(shlExtraerTorqueY, SWT.NONE);
 		btnSalir.setBounds(458, 272, 76, 25);
@@ -190,7 +199,6 @@ public class MainForm {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
-					//Runtime.getRuntime().exec("rundll32 url.dll, FileProtocolHandler" + "C:\\Users\\PinXe\\Documents\\109150306215 daniel luz.pdf");
 					Desktop.getDesktop().open(new File("C:\\Users\\PinXe\\Documents\\109150306215 daniel luz.pdf"));
 				}catch(Exception i) {
 					System.out.println("No se pudo abrir el PDF");
