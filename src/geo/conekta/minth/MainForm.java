@@ -4,6 +4,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,6 +23,11 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.widgets.CoolBar;
+import org.eclipse.swt.widgets.CoolItem;
 
 public class MainForm {
 
@@ -174,6 +180,25 @@ public class MainForm {
 		Button btnSalir = new Button(shlExtraerTorqueY, SWT.NONE);
 		btnSalir.setBounds(458, 272, 76, 25);
 		btnSalir.setText("Cancelar");
+		
+		ToolBar toolBar = new ToolBar(shlExtraerTorqueY, SWT.FLAT | SWT.RIGHT);
+		toolBar.setBackground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
+		toolBar.setBounds(0, 0, 570, 23);
+		
+		ToolItem tltmManual = new ToolItem(toolBar, SWT.NONE);
+		tltmManual.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				try {
+					//Runtime.getRuntime().exec("rundll32 url.dll, FileProtocolHandler" + "C:\\Users\\PinXe\\Documents\\109150306215 daniel luz.pdf");
+					Desktop.getDesktop().open(new File("C:\\Users\\PinXe\\Documents\\109150306215 daniel luz.pdf"));
+				}catch(Exception i) {
+					System.out.println("No se pudo abrir el PDF");
+				}
+				
+			}
+		});
+		tltmManual.setText("Manual");
 		
 
 
