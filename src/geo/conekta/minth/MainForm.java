@@ -6,10 +6,14 @@ import org.eclipse.swt.widgets.Text;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JFileChooser;
+import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
@@ -33,12 +37,14 @@ public class MainForm {
 
 	protected Shell shlExtraerTorqueY;
 	private Text txtExtraerDe;
-	private Display display = Display.getDefault();
+	public static Display display = Display.getDefault();
 	private JFileChooser chooser = new JFileChooser("C:\\csv2extract");
 	public static Label myOutput;
 	public static Text text1;
 	public static ProgressBar progressBar1;
-	
+
+    private ReadCsv myProcess = null;
+
 	String myPath=null;
 	
 	/**
@@ -74,7 +80,7 @@ public class MainForm {
 	 */
 	protected void createContents() {
 		shlExtraerTorqueY = new Shell();
-		shlExtraerTorqueY.setSize(586, 342);
+		shlExtraerTorqueY.setSize(586, 321);
 		shlExtraerTorqueY.setText("Extraer Torque y Angulo");
 
 		txtExtraerDe = new Text(shlExtraerTorqueY, SWT.BORDER);
@@ -84,7 +90,7 @@ public class MainForm {
 		txtExtraerDe.setBounds(75, 38, 336, 21);
 		
 		Label lblNewLabel = new Label(shlExtraerTorqueY, SWT.NONE);
-		lblNewLabel.setBounds(34, 41, 55, 15);
+		lblNewLabel.setBounds(34, 41, 35, 15);
 		lblNewLabel.setText("Ruta");
 		
 		ScrolledComposite scrolledComposite = new ScrolledComposite(shlExtraerTorqueY, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -92,6 +98,11 @@ public class MainForm {
 		scrolledComposite.setBounds(75, 76, 459, 132);
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
+		
+		myOutput = new Label( scrolledComposite, SWT.NONE );
+		myOutput.setBackground( display.getSystemColor( SWT.COLOR_WHITE ) );
+		myOutput.setSize( 400, 400 );
+		scrolledComposite.setContent(myOutput);
 
 		Button btnProcesar = new Button(shlExtraerTorqueY, SWT.NONE);
 		//crea el directorio csv2extract si no existe
@@ -102,11 +113,8 @@ public class MainForm {
 			//no tiene acceso a la unidad C: le pide al usuario que cambie o seleccione una ruta
 			btnProcesar.setEnabled(false);
 			System.out.println(e);
-        }
-		
-		
-		
-//		btnProcesar.setEnabled(true);
+        }			
+
 
 		Button btnCambiarRuta = new Button(shlExtraerTorqueY, SWT.NONE);
 		btnCambiarRuta.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,1,0));
@@ -116,7 +124,7 @@ public class MainForm {
 				
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				chooser.setDialogTitle("Seleccione un directorio");
-			    Integer returnVal = chooser.showOpenDialog(null);
+			    Integer returnVal = chooser.showDialog(chooser, "Seleccionar");
 			    if(returnVal == JFileChooser.APPROVE_OPTION) {
 			    	myPath=chooser.getSelectedFile().getPath();
 			    	txtExtraerDe.setText(myPath);
@@ -128,47 +136,25 @@ public class MainForm {
 		btnCambiarRuta.setBounds(417, 36, 35, 25);
 		btnCambiarRuta.setText("...");
 		
-        progressBar1 = new ProgressBar(shlExtraerTorqueY, SWT.NULL);
+        progressBar1 = new ProgressBar(shlExtraerTorqueY, SWT.HORIZONTAL);
         progressBar1.setMinimum(0);
         progressBar1.setVisible(false);
-        //progressBar1.setSelection(0);
-        progressBar1.setBounds(337, 272, 115, 21);
+        progressBar1.setBounds(337, 236, 115, 21); 
         
 		Label lblArchivoLeido = new Label(shlExtraerTorqueY, SWT.NONE);
-		lblArchivoLeido.setBounds(14, 278, 55, 15);
+		lblArchivoLeido.setBounds(28, 240, 55, 15);
 		lblArchivoLeido.setText("Abriendo");
 		lblArchivoLeido.setVisible(false);
 		
 		btnProcesar.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				//myPath=chooser.getSelectedFile().getPath();
-				
 				progressBar1.setVisible(true);
 				text1.setVisible(true);
-				lblArchivoLeido.setVisible(true);
-				
-				myPath = txtExtraerDe.getText();
-				if (myPath == null)
-				{
-				    Shell shell = new Shell();
-			        MessageBox messageBox = new MessageBox(shell, SWT.ICON_WARNING | SWT.ABORT | SWT.RETRY | SWT.IGNORE);		        
-			        messageBox.setText("Alerta");
-			        messageBox.setMessage("Selecciona una carpeta para proceder");
-				}
-				else {					
-					ReadCsv myProcess= new ReadCsv();
-					try {			
-						myOutput = new Label( scrolledComposite, SWT.NONE );
-						myOutput.setBackground( display.getSystemColor( SWT.COLOR_WHITE ) );
-						myOutput.setSize( 400, 400 );
-						scrolledComposite.setContent(myOutput);
-						myProcess.processCsv(myPath);
-						progressBar1.setSelection(100);
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
+				lblArchivoLeido.setVisible(true);				
+				myPath = txtExtraerDe.getText();				
+					myProcess = new ReadCsv(display,progressBar1, myPath, myOutput,text1);
+					myProcess.start();
 			}
 		});
 		btnProcesar.setBounds(458, 36, 75, 25);
@@ -178,16 +164,13 @@ public class MainForm {
 		lblLog.setBounds(34, 76, 35, 15);
 		lblLog.setText("Log");
 		
-
-		
-
-		
 		text1 = new Text(shlExtraerTorqueY, SWT.BORDER);
-		text1.setBounds(89, 272, 242, 21);
+		text1.setEditable(false);
+		text1.setBounds(85, 236, 242, 21);
 		text1.setVisible(false);
 		
 		Button btnSalir = new Button(shlExtraerTorqueY, SWT.NONE);
-		btnSalir.setBounds(458, 272, 76, 25);
+		btnSalir.setBounds(458, 234, 76, 25);
 		btnSalir.setText("Cancelar");
 		
 		ToolBar toolBar = new ToolBar(shlExtraerTorqueY, SWT.FLAT | SWT.RIGHT);
@@ -199,36 +182,19 @@ public class MainForm {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
-					Desktop.getDesktop().open(new File("C:\\Users\\PinXe\\Pictures\\minth\\MANUAL USUARIO MINTH.pdf"));
+					Desktop.getDesktop().open(new File("C:\\Program Files (x86)\\Minth\\MANUAL-USUARIO-MINTH.pdf"));
 				}catch(Exception i) {
-					System.out.println("No se pudo abrir el PDF");
+			        MessageBox messageBox = new MessageBox(shlExtraerTorqueY, SWT.ICON_INFORMATION | SWT.OK );		        
+			        messageBox.setText("Alerta");
+			        messageBox.setMessage("Hay un problema con el Manual de usuario, favor de ponerse en contacto con su proveedor.");
+			        messageBox.open();			
+			        System.out.println(i.getStackTrace().toString());
 				}
-				
 			}
 		});
 		tltmManual.setText("Manual");
-		
+	}
+	
+	
 
-
-	}
-	
-	public static void setLabelText(String txt)
-	{
-		myOutput.setText(txt);
-	}
-	
-	public static void setLabelFile(String txt)
-	{
-		text1.setText(txt);
-	}
-	
-	public static void setPBMax(int num)
-	{
-        progressBar1.setMaximum(num);
-	}
-	
-	public static void setPBSel(int num)
-	{
-        progressBar1.setSelection(num);
-	}
 }
