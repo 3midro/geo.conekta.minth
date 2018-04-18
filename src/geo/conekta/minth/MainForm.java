@@ -199,7 +199,7 @@ public class MainForm {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
-					Desktop.getDesktop().open(new File("C:\\Users\\PinXe\\Documents\\109150306215 daniel luz.pdf"));
+					Desktop.getDesktop().open(new File("C:\\Users\\PinXe\\Pictures\\minth\\MANUAL USUARIO MINTH.pdf"));
 				}catch(Exception i) {
 					System.out.println("No se pudo abrir el PDF");
 				}
