@@ -6,15 +6,6 @@ import org.eclipse.swt.widgets.Text;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.swing.JFileChooser;
-import javax.swing.JProgressBar;
-import javax.swing.SwingWorker;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
@@ -22,23 +13,21 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.widgets.CoolBar;
-import org.eclipse.swt.widgets.CoolItem;
 
 public class MainForm {
 
 	protected Shell shlExtraerTorqueY;
 	private Text txtExtraerDe;
 	public static Display display = Display.getDefault();
-	private JFileChooser chooser = new JFileChooser("C:\\csv2extract");
+
+	String selected = "c:\\csv2extract\\";
+	
 	public static Label myOutput;
 	public static Text text1;
 	public static ProgressBar progressBar1;
@@ -115,22 +104,17 @@ public class MainForm {
 			System.out.println(e);
         }			
 
-
+		DirectoryDialog fd = new DirectoryDialog(shlExtraerTorqueY, SWT.OPEN);
 		Button btnCambiarRuta = new Button(shlExtraerTorqueY, SWT.NONE);
 		btnCambiarRuta.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,1,0));
 		btnCambiarRuta.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				
-				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				chooser.setDialogTitle("Seleccione un directorio");
-			    Integer returnVal = chooser.showDialog(chooser, "Seleccionar");
-			    if(returnVal == JFileChooser.APPROVE_OPTION) {
-			    	myPath=chooser.getSelectedFile().getPath();
-			    	txtExtraerDe.setText(myPath);
-			    	txtExtraerDe.setEnabled(true);    	
-			    	btnProcesar.setEnabled(true);
-			    }
+				fd.setText("Seleccionar");
+				fd.setFilterPath("C:\\csv2extract");
+				selected = fd.open();
+				txtExtraerDe.setText(selected);
+				System.out.println(selected);
 			}
 		});
 		btnCambiarRuta.setBounds(417, 36, 35, 25);
@@ -170,6 +154,12 @@ public class MainForm {
 		text1.setVisible(false);
 		
 		Button btnSalir = new Button(shlExtraerTorqueY, SWT.NONE);
+		btnSalir.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.exit(0);
+			}
+		});
 		btnSalir.setBounds(458, 234, 76, 25);
 		btnSalir.setText("Cancelar");
 		
@@ -194,7 +184,4 @@ public class MainForm {
 		});
 		tltmManual.setText("Manual");
 	}
-	
-	
-
 }
