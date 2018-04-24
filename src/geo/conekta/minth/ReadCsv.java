@@ -8,12 +8,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Stream;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
@@ -26,18 +29,35 @@ public class ReadCsv extends Thread{
 	private Label myOutput;
 	private Text text1;
 	private String myPath;
+	private Button btnSalir;
+	private Label lblArchivoLeido;
+	private Date myFechaIni;
+	
     static ArrayList arList = null;
     static String statuslog;
     static int progressC;
     String myLine="";
+    int totalCount;
     
-    public ReadCsv(Display display, ProgressBar progressBar,String myPath, Label myOutput,Text text1) {
+    public ReadCsv(Display display, ProgressBar progressBar,String myPath, Label myOutput,Text text1, Button btnSalir, Label lblArchivoLeido) {
         this.display = display;
         this.progressBar = progressBar;
         this.myPath=myPath;
         this.myOutput=myOutput;
         this.text1=text1;
+        this.btnSalir = btnSalir;
+        this.lblArchivoLeido = lblArchivoLeido;
+//    	Button btnSalir = new Button(shlExtraerTorqueY, SWT.NONE);
+    	btnSalir.addSelectionListener(new SelectionAdapter() {
+    		@Override
+    		public void widgetSelected(SelectionEvent e) {
+    			System.exit(0);
+    		}
+    	});
     }
+    
+    
+
 
     @Override
     public void run() {
@@ -49,6 +69,23 @@ public class ReadCsv extends Thread{
         this.updateGUIInProgress(myPath);
 
         this.updateGUIWhenFinish();
+    }
+    
+    private void updateGUIWhenStart() {
+        display.asyncExec(new Runnable() {
+ 
+            @Override
+            public void run() {
+        		progressBar.setSelection(0);
+            	myFechaIni = new Date();
+        		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
+        		statuslog="Hora Inicial: "+ft.format(myFechaIni);
+        		myOutput.setText(statuslog);
+                arList = new ArrayList();
+            }
+        });
+        
+
     }
 
     private void updateGUIInProgress(String directorio) {
@@ -68,17 +105,25 @@ public class ReadCsv extends Thread{
             public void run() {
             	if (progressBar.isDisposed())
                     return;
+            	if (text1.isDisposed())
+                    return;
+            	
+            	
+            	totalCount = 0;
+            	getCountFile (directorio);
             	getFiles(directorio);
                 if (arList.size()==1)
                 	statuslog=statuslog + "\n - Ningun archivo procesado / sin información";
-                else
-               		statuslog=statuslog + "\n "+count+" Archivos Procesados - Tamaño: "+countSize+ " Bytes";
+                else {
+               		String finalSize=size(countSize);
+                	statuslog=statuslog + "\n "+count+" Archivos Procesados - Tamaño: "+finalSize;
+                }
             }
             
             public void getFiles(String directorio) {
+            	
             	final String extension = ".csv";	
             	File dir = new File("dir");
-           
         		FileFilter directoryFilter = new FileFilter() {
         			public boolean accept(File file) {
         				return file.isDirectory();
@@ -89,7 +134,7 @@ public class ReadCsv extends Thread{
         		File[] ar1 =f.listFiles((File pathname) -> pathname.getName().endsWith(extension));
         		File[] ar2 =f.listFiles(directoryFilter);
         		File[] ficheros = Stream.of(ar1, ar2).flatMap(Stream::of).toArray(File[]::new);
-        		progressC=ficheros.length+2;
+        		progressC=totalCount+2;
         		progressBar.setMaximum(progressC);
         		
                 //ArrayList al = new ArrayList();
@@ -160,20 +205,7 @@ public class ReadCsv extends Thread{
     	}});
     }
  
-    private void updateGUIWhenStart() {
-        display.asyncExec(new Runnable() {
- 
-            @Override
-            public void run() {
-            	Date myFecha = new Date();
-        		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
-        		statuslog="Hora Inicial: "+ft.format(myFecha);
-        		myOutput.setText(statuslog);
-            	
-                arList = new ArrayList();
-            }
-        });
-    }
+
  
     private void updateGUIWhenFinish() {
         display.asyncExec(new Runnable() {
@@ -183,7 +215,7 @@ public class ReadCsv extends Thread{
                 //Excel
                 try
                 {
-                	progressBar.setSelection(progressBar.getSelection() + 1);
+                	progressBar.setSelection(progressBar.getSelection() + 2);
 
                 	if (arList.size()>1)
                 	{
@@ -204,14 +236,31 @@ public class ReadCsv extends Thread{
 	            		SimpleDateFormat ft2 = new SimpleDateFormat ("YYYY_MM_DD_HHmmss"); 
 	            		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
 	            		ft2.format(myFecha);
-	            		String fileN="\\Extracto_"+ft2.format(myFecha)+".xls";
+	            		
+	            		java.util.GregorianCalendar jCal = new java.util.GregorianCalendar();
+            		    java.util.GregorianCalendar jCal2 = new java.util.GregorianCalendar();
+            		    
+            		    jCal.setTime(myFechaIni);
+            		    jCal2.setTime(myFecha);
+            		    
+            		    String tiempo;
+            		    long diferencia = jCal2.getTime().getTime()-jCal.getTime().getTime();
+            		    if (diferencia / (1000 * 60) > 0){
+            		    	tiempo= (diferencia / (1000 * 60)) + " minutos transcurridos";
+            		    } else {
+            		    	tiempo= (diferencia / 1000) + " segundos transcurridos";
+            		    }
+	            		
+	            		
+	            		String fileN="/Extracto_"+ft2.format(myFecha)+".xls";
 	                    FileOutputStream fileOut = new FileOutputStream(myPath+fileN);
 	                    hwb.write(fileOut);
 	                    fileOut.close();
 	                    System.out.println("Your excel file has been generated");    
 	                    myFecha = new Date();
 	                    statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
-	                    statuslog=statuslog + "\nArchivo generado: "+fileN;
+	                    statuslog=statuslog + "\nTiempo de Ejecución: "+ tiempo  ;
+	                    statuslog=statuslog + "\nArchivo generado: "+myPath+fileN;
 	                    myOutput.setText(statuslog);
                 	}
                 	else 
@@ -222,7 +271,11 @@ public class ReadCsv extends Thread{
 	                    myOutput.setText(statuslog);
                 	}
 
-                    progressBar.setSelection(progressBar.getSelection() + 1);
+                    progressBar.setVisible(false);
+    				text1.setVisible(false);
+    				lblArchivoLeido.setVisible(false);	
+    				btnSalir.setVisible(false);
+    				
                  
                 } catch ( Exception ex ) {
                     ex.printStackTrace();
@@ -230,6 +283,55 @@ public class ReadCsv extends Thread{
             }
         });
     }
+    
+    public static String size(int size){
+	    String hrSize = "";
+	    int k = size;
+	    double m = size/1024;
+	    double g = size/1048576;
+	    double t = size/1073741824;
+	    
+	    DecimalFormat dec = new DecimalFormat("0.00");
+	    
+	    if (k>0)
+	    {
+	        hrSize = dec.format(k).concat(" byte");
+	    }
+	    if (m>0)
+	    {
+	        hrSize = dec.format(m).concat(" KB");
+	    }
+	    if (g>0)
+	    {
+	        hrSize = dec.format(g).concat(" MB");
+	    }
+	    if (t>0)
+	    {
+	        hrSize = dec.format(t).concat(" GB");
+	    }
+	    return hrSize;
+    }
+    
+    private void getCountFile(String dirPath) {
+        File f = new File(dirPath);
+        File[] files = f.listFiles();
+        if (files != null)
+        for (int i = 0; i < files.length; i++) {
+            File file = files[i];         
+            String extension = "";
+            int c = file.getName().lastIndexOf('.');
+            if (c > 0) {
+                extension = file.getName().substring(c+1);
+            }
+            if (extension.equals("csv"))
+            	totalCount++;            
+            if (file.isDirectory()) {   
+            	getCountFile(file.getAbsolutePath()); 
+            }
+        }
+    }
+    
+
 
    /* public void cancel() {
         this.cancel = true;

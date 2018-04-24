@@ -3,7 +3,6 @@ package geo.conekta.minth;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
 import java.awt.Desktop;
 import java.io.File;
 import org.eclipse.swt.SWT;
@@ -19,9 +18,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.graphics.Image;
 
-public class MainForm {
+public class MainForm  {
 
 	protected Shell shlExtraerTorqueY;
 	private Text txtExtraerDe;
@@ -72,10 +70,7 @@ public class MainForm {
 		shlExtraerTorqueY = new Shell();
 		shlExtraerTorqueY.setImage(SWTResourceManager.getImage(MainForm.class, "/geo/conekta/minth/minth_m26_icon.ico"));
 		shlExtraerTorqueY.setSize(586, 321);
-		shlExtraerTorqueY.setText("Extraer Torque y Angulo");
-	   // Image small = new Image(display,"src\minth_m26_icon.ico");
-	    
-	   // shlExtraerTorqueY.setImage(small); 
+		shlExtraerTorqueY.setText("Extraer Torque y Angulo"); 
 
 		txtExtraerDe = new Text(shlExtraerTorqueY, SWT.BORDER);
 		txtExtraerDe.setEditable(false);
@@ -135,14 +130,26 @@ public class MainForm {
 		lblArchivoLeido.setText("Abriendo");
 		lblArchivoLeido.setVisible(false);
 		
+		Button btnSalir = new Button(shlExtraerTorqueY, SWT.NONE);
+		btnSalir.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.exit(0);
+			}
+		});
+		btnSalir.setBounds(458, 234, 76, 25);
+		btnSalir.setText("Cancelar");
+		btnSalir.setVisible(false);
+		
 		btnProcesar.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				progressBar1.setVisible(true);
 				text1.setVisible(true);
-				lblArchivoLeido.setVisible(true);				
+				lblArchivoLeido.setVisible(true);	
+				btnSalir.setVisible(true);
 				myPath = txtExtraerDe.getText();				
-					myProcess = new ReadCsv(display,progressBar1, myPath, myOutput,text1);
+					myProcess = new ReadCsv(display,progressBar1, myPath, myOutput,text1,btnSalir,lblArchivoLeido);
 					myProcess.start();
 			}
 		});
@@ -158,15 +165,7 @@ public class MainForm {
 		text1.setBounds(85, 236, 242, 21);
 		text1.setVisible(false);
 		
-		Button btnSalir = new Button(shlExtraerTorqueY, SWT.NONE);
-		btnSalir.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				System.exit(0);
-			}
-		});
-		btnSalir.setBounds(458, 234, 76, 25);
-		btnSalir.setText("Cancelar");
+
 		
 		ToolBar toolBar = new ToolBar(shlExtraerTorqueY, SWT.FLAT | SWT.RIGHT);
 		toolBar.setBackground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
