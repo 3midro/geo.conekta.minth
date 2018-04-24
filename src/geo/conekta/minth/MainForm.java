@@ -19,6 +19,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.wb.swt.SWTResourceManager;
+import org.eclipse.swt.graphics.Image;
 
 public class MainForm {
 
@@ -69,8 +70,12 @@ public class MainForm {
 	 */
 	protected void createContents() {
 		shlExtraerTorqueY = new Shell();
+		shlExtraerTorqueY.setImage(SWTResourceManager.getImage(MainForm.class, "/geo/conekta/minth/minth_m26_icon.ico"));
 		shlExtraerTorqueY.setSize(586, 321);
 		shlExtraerTorqueY.setText("Extraer Torque y Angulo");
+	   // Image small = new Image(display,"src\minth_m26_icon.ico");
+	    
+	   // shlExtraerTorqueY.setImage(small); 
 
 		txtExtraerDe = new Text(shlExtraerTorqueY, SWT.BORDER);
 		txtExtraerDe.setEditable(false);
