@@ -1,4 +1,5 @@
 package geo.conekta.minth;
+import java.awt.Desktop;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -256,7 +257,14 @@ public class ReadCsv extends Thread{
 	                    FileOutputStream fileOut = new FileOutputStream(myPath+fileN);
 	                    hwb.write(fileOut);
 	                    fileOut.close();
-	                    System.out.println("Your excel file has been generated");    
+	                    System.out.println("Your excel file has been generated"); 
+	                   try{ 
+	                     //definiendo la ruta en la propiedad file
+	                	   Desktop.getDesktop().open(new File(myPath+fileN));	                       
+	                     }catch(IOException e){
+	                        e.printStackTrace();
+	                     } 
+	                    
 	                    myFecha = new Date();
 	                    statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
 	                    statuslog=statuslog + "\nTiempo de Ejecución: "+ tiempo  ;

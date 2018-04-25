@@ -70,7 +70,7 @@ public class MainForm  {
 		shlExtraerTorqueY = new Shell();
 		shlExtraerTorqueY.setImage(SWTResourceManager.getImage(MainForm.class, "/geo/conekta/minth/ico48.ico"));
 		shlExtraerTorqueY.setSize(586, 321);
-		shlExtraerTorqueY.setText("Extraer Torque y Angulo"); 
+		shlExtraerTorqueY.setText("Extraer Torque y \u00C1ngulo"); 
 
 		txtExtraerDe = new Text(shlExtraerTorqueY, SWT.BORDER);
 		txtExtraerDe.setEditable(false);
