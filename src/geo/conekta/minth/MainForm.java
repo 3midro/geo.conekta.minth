@@ -68,7 +68,7 @@ public class MainForm  {
 	 */
 	protected void createContents() {
 		shlExtraerTorqueY = new Shell();
-		shlExtraerTorqueY.setImage(SWTResourceManager.getImage(MainForm.class, "/geo/conekta/minth/minth_m26_icon.ico"));
+		shlExtraerTorqueY.setImage(SWTResourceManager.getImage(MainForm.class, "/geo/conekta/minth/ico48.ico"));
 		shlExtraerTorqueY.setSize(586, 321);
 		shlExtraerTorqueY.setText("Extraer Torque y Angulo"); 
 

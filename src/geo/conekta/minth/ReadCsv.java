@@ -149,7 +149,7 @@ public class ReadCsv extends Thread{
                 		this.getFiles(ficheros[x].getPath());
                 	} else {
                 		progressBar.setSelection(progressBar.getSelection() + 1);
-                		text1.setText(ficheros[x].getAbsolutePath());
+                		MainForm.text1.setText(ficheros[x].getAbsolutePath());
                 		count++;
                 		countSize=countSize + (int)(ficheros[x].length());        	
     				
