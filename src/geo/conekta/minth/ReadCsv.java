@@ -72,7 +72,7 @@ public class ReadCsv extends Thread{
     
     private void copy(File file) {
         try {
-            Thread.sleep(50);
+            Thread.sleep(1);
         } catch (InterruptedException e) {
         }
     }
