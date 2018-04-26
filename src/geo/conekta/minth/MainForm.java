@@ -146,12 +146,14 @@ public class MainForm  {
 		btnProcesar.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				btnProcesar.setEnabled(false);
+				btnCambiarRuta.setEnabled(false);
 				progressBar1.setVisible(true);
 				text1.setVisible(false);
 				lblArchivoLeido.setVisible(true);	
 				btnSalir.setVisible(true);
 				myPath = txtExtraerDe.getText();				
-					myProcess = new ReadCsv(display,progressBar1, myPath, myOutput,text1,btnSalir,lblArchivoLeido);
+					myProcess = new ReadCsv(display,progressBar1, myPath, myOutput,text1,btnSalir,lblArchivoLeido, btnProcesar, btnCambiarRuta);
 					myProcess.start();
 			}
 		});
@@ -166,7 +168,7 @@ public class MainForm  {
 		
 		ToolBar toolBar = new ToolBar(shlExtraerTorqueY, SWT.FLAT | SWT.RIGHT);
 		toolBar.setBackground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
-		toolBar.setBounds(0, 0, 570, 23);
+		toolBar.setBounds(0, 0, 580, 23);
 		
 		ToolItem tltmManual = new ToolItem(toolBar, SWT.NONE);
 		tltmManual.addSelectionListener(new SelectionAdapter() {

@@ -35,15 +35,18 @@ public class ReadCsv extends Thread{
 	private Date myFechaIni;
 	private boolean cancel;
 	
+	
     static ArrayList arList = new ArrayList();
     static String statuslog;
     static int progressC;
     String myLine="";
     int totalCount;
    	int count=0;
-   	int countSize=0;  
+   	int countSize=0;
+	private Button btnProcesar;  
+   	private Button btnCambiarRuta;
     
-    public ReadCsv(Display display, ProgressBar progressBar,String myPath, Label myOutput,Text text1, Button btnSalir, Label lblArchivoLeido) {
+    public ReadCsv(Display display, ProgressBar progressBar,String myPath, Label myOutput,Text text1, Button btnSalir, Label lblArchivoLeido, Button btnProcesar, Button btnCambiarRuta ) {
         this.display = display;
         this.progressBar = progressBar;
         this.myPath=myPath;
@@ -51,6 +54,8 @@ public class ReadCsv extends Thread{
         this.text1=text1;
         this.btnSalir = btnSalir;
         this.lblArchivoLeido = lblArchivoLeido;
+        this.btnProcesar = btnProcesar;
+        this.btnCambiarRuta = btnCambiarRuta;
     }
 
     @Override
@@ -276,6 +281,9 @@ public class ReadCsv extends Thread{
 	    				text1.setVisible(false);
 	    				lblArchivoLeido.setVisible(false);	
 	    				btnSalir.setVisible(false);
+	    				btnProcesar.setEnabled(true);
+	    				btnCambiarRuta.setEnabled(true);
+	    				
 	    			} catch ( Exception ex ) {
 	                    ex.printStackTrace();
 	                } //main method ends
@@ -290,6 +298,8 @@ public class ReadCsv extends Thread{
     				text1.setVisible(false);
     				lblArchivoLeido.setVisible(false);	
     				btnSalir.setVisible(false);
+    				btnProcesar.setEnabled(true);
+    				btnCambiarRuta.setEnabled(true);
 	            }  
             }
         });
