@@ -33,12 +33,15 @@ public class ReadCsv extends Thread{
 	private Button btnSalir;
 	private Label lblArchivoLeido;
 	private Date myFechaIni;
+	private boolean cancel;
 	
-    static ArrayList arList = null;
+    static ArrayList arList = new ArrayList();
     static String statuslog;
     static int progressC;
     String myLine="";
     int totalCount;
+   	int count=0;
+   	int countSize=0;  
     
     public ReadCsv(Display display, ProgressBar progressBar,String myPath, Label myOutput,Text text1, Button btnSalir, Label lblArchivoLeido) {
         this.display = display;
@@ -48,17 +51,7 @@ public class ReadCsv extends Thread{
         this.text1=text1;
         this.btnSalir = btnSalir;
         this.lblArchivoLeido = lblArchivoLeido;
-//    	Button btnSalir = new Button(shlExtraerTorqueY, SWT.NONE);
-    	btnSalir.addSelectionListener(new SelectionAdapter() {
-    		@Override
-    		public void widgetSelected(SelectionEvent e) {
-    			System.exit(0);
-    		}
-    	});
     }
-    
-    
-
 
     @Override
     public void run() {
@@ -66,10 +59,17 @@ public class ReadCsv extends Thread{
             return;
         }
         this.updateGUIWhenStart();
-    	
-        this.updateGUIInProgress(myPath);
-
+    	totalCount = 0;
+    	getCountFile (myPath);
+    	getFiles(myPath);
         this.updateGUIWhenFinish();
+    }
+    
+    private void copy(File file) {
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+        }
     }
     
     private void updateGUIWhenStart() {
@@ -77,136 +77,121 @@ public class ReadCsv extends Thread{
  
             @Override
             public void run() {
+            	arList = new ArrayList();
         		progressBar.setSelection(0);
             	myFechaIni = new Date();
         		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
         		statuslog="Hora Inicial: "+ft.format(myFechaIni);
         		myOutput.setText(statuslog);
-                arList = new ArrayList();
             }
         });
         
 
     }
 
-    private void updateGUIInProgress(String directorio) {
-    	 try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	
-    	 	display.asyncExec(new Runnable() {
- 
-           	int count=0;
-           	int countSize=0;  	
+    private void updateGUIInProgress(String file, int value, int count) {
+   	 	display.asyncExec(new Runnable() {
 
-            @Override
+   	 		@Override
             public void run() {
-            	if (progressBar.isDisposed())
-                    return;
-            	if (text1.isDisposed())
-                    return;
             	
-            	
-            	totalCount = 0;
-            	getCountFile (directorio);
-            	getFiles(directorio);
-                if (arList.size()==1)
-                	statuslog=statuslog + "\n - Ningun archivo procesado / sin información";
-                else {
-               		String finalSize=size(countSize);
-                	statuslog=statuslog + "\n "+count+" Archivos Procesados - Tamaño: "+finalSize;
-                }
+   	 			lblArchivoLeido.setText("Abriendo: " + file);
+   	 			progressBar.setMaximum(count);
+   	 			progressBar.setSelection(value);
             }
-            
-            public void getFiles(String directorio) {
-            	
-            	final String extension = ".csv";	
-            	File dir = new File("dir");
-        		FileFilter directoryFilter = new FileFilter() {
-        			public boolean accept(File file) {
-        				return file.isDirectory();
-        			}
-        		};
-        		
-            	File f = new File(directorio);
-        		File[] ar1 =f.listFiles((File pathname) -> pathname.getName().endsWith(extension));
-        		File[] ar2 =f.listFiles(directoryFilter);
-        		File[] ficheros = Stream.of(ar1, ar2).flatMap(Stream::of).toArray(File[]::new);
-        		progressC=totalCount+2;
-        		progressBar.setMaximum(progressC);
-        		
-                //ArrayList al = new ArrayList();
-                int i=0;
-                //añade la cabecera
-                if (count == 0) {
-                	arList.add("par de torsión perno_exterior_izq,ángulo perno_exterior_izq,par de torsión perno_interior_izq,ángulo perno_interior_izq,par de torsión perno_interior_drch,ángulo perno_interior_drch,par de torsión perno_exterior_drch,ángulo perno_exterior_drch,ruta archivo");
-                }
-                for (int x = 0; x < ficheros.length; x++) {
-                	if (ficheros[x].isDirectory()) {
-                		System.out.println(ficheros[x].getName());
-                		this.getFiles(ficheros[x].getPath());
-                	} else {
-                		progressBar.setSelection(progressBar.getSelection() + 1);
-                		MainForm.text1.setText(ficheros[x].getAbsolutePath());
-                		count++;
-                		countSize=countSize + (int)(ficheros[x].length());        	
-    				
-                		//CSV
-                		String fName = ficheros[x].getPath();
-                		String fNameComp = ficheros[x].getAbsolutePath();
-                		String thisLine;
-                		FileInputStream fis;
-                		try {
-                			System.out.println(fName);
-                			fis = new FileInputStream(fName);
-                			DataInputStream myInput = new DataInputStream(fis);
-                			while ((thisLine = myInput.readLine()) != null){
-                				String strar[] = thisLine.split(";");
-                				//usar astring y split
-                				if (strar[0].equals("par de torsión perno_exterior_izq")) {
-                						myLine=strar[1]+",";
-                				}
-                				if (strar[0].equals("ángulo perno_exterior_izq")) {
-                					myLine=myLine+strar[1]+",";
-                				}
-                				if (strar[0].equals("par de torsión perno_interior_izq")) {
-                					myLine=myLine+strar[1]+",";
-                				}
-                				if (strar[0].equals("ángulo perno_interior_izq")) {
-                					myLine=myLine+strar[1]+",";
-                				}
-                				if (strar[0].equals("par de torsión perno_interior_drch")) {
-                					myLine=myLine+strar[1]+",";
-                				}
-                				if (strar[0].equals("ángulo perno_interior_drch")) {
-                					myLine=myLine+strar[1]+",";
-                				}
-                				if (strar[0].equals("par de torsión perno_exterior_drch")) {
-                					myLine=myLine+strar[1]+",";
-                				}
-                				if (strar[0].equals("ángulo perno_exterior_drch")) {
-                					myLine=myLine+strar[1]+",";
-                				}
-                				i++;
-                			}
-                		} catch (IOException e) {
-                			// TODO Auto-generated catch block
-                			e.printStackTrace();
-                		}
-               			if (!myLine.equals("")) {
-               				myLine = myLine.concat(fNameComp).concat(",");
-               				arList.add(myLine);
-               			}
-         		       	myLine="";
-                	}
-                }
-    	}});
+    	});
     }
  
-
+	private void getFiles(String directorio)
+	{
+		final String extension = ".csv";	
+		File dir = new File("dir");
+		FileFilter directoryFilter = new FileFilter() {
+			public boolean accept(File file) {
+				return file.isDirectory();
+			}
+		};
+		
+		File f = new File(directorio);
+		File[] ar1 =f.listFiles((File pathname) -> pathname.getName().endsWith(extension));
+		File[] ar2 =f.listFiles(directoryFilter);
+		File[] ficheros = Stream.of(ar1, ar2).flatMap(Stream::of).toArray(File[]::new);
+		progressC=totalCount+2;
+		//progressBar.setMaximum(progressC);
+		
+	    //ArrayList al = new ArrayList();
+	    int i=0;
+	    //añade la cabecera
+	    if (count == 0) {
+	    	arList.add("par de torsión perno_exterior_izq,ángulo perno_exterior_izq,par de torsión perno_interior_izq,ángulo perno_interior_izq,par de torsión perno_interior_drch,ángulo perno_interior_drch,par de torsión perno_exterior_drch,ángulo perno_exterior_drch,ruta archivo");
+	    }
+	    for (int x = 0; x < ficheros.length; x++) {
+	        if (cancel) {
+	            break;
+	        }
+	    	if (ficheros[x].isDirectory()) {
+	    		System.out.println(ficheros[x].getName());
+	    		this.getFiles(ficheros[x].getPath());
+	    	} else {
+	    		this.copy(ficheros[x]);
+	    		String fName = ficheros[x].getPath();
+	            this.updateGUIInProgress(fName,count,progressC);
+	            
+	    		//progressBar.setSelection(progressBar.getSelection() + 1);
+	    		//MainForm.text1.setText(ficheros[x].getAbsolutePath());
+	    		count++;
+	    		countSize=countSize + (int)(ficheros[x].length());        	
+			
+	    		//CSV
+	    		
+	    		String fNameComp = ficheros[x].getAbsolutePath();
+	    		String thisLine;
+	    		FileInputStream fis;
+	    		try {
+	    			System.out.println(fName);
+	    			fis = new FileInputStream(fName);
+	    			DataInputStream myInput = new DataInputStream(fis);
+	    			while ((thisLine = myInput.readLine()) != null){
+	    				String strar[] = thisLine.split(";");
+	    				//usar astring y split
+	    				if (strar[0].equals("par de torsión perno_exterior_izq")) {
+	    						myLine=strar[1]+",";
+	    				}
+	    				if (strar[0].equals("ángulo perno_exterior_izq")) {
+	    					myLine=myLine+strar[1]+",";
+	    				}
+	    				if (strar[0].equals("par de torsión perno_interior_izq")) {
+	    					myLine=myLine+strar[1]+",";
+	    				}
+	    				if (strar[0].equals("ángulo perno_interior_izq")) {
+	    					myLine=myLine+strar[1]+",";
+	    				}
+	    				if (strar[0].equals("par de torsión perno_interior_drch")) {
+	    					myLine=myLine+strar[1]+",";
+	    				}
+	    				if (strar[0].equals("ángulo perno_interior_drch")) {
+	    					myLine=myLine+strar[1]+",";
+	    				}
+	    				if (strar[0].equals("par de torsión perno_exterior_drch")) {
+	    					myLine=myLine+strar[1]+",";
+	    				}
+	    				if (strar[0].equals("ángulo perno_exterior_drch")) {
+	    					myLine=myLine+strar[1]+",";
+	    				}
+	    				i++;
+	    			}
+	    		} catch (IOException e) {
+	    			// TODO Auto-generated catch block
+	    			e.printStackTrace();
+	    		}
+	   			if (!myLine.equals("")) {
+	   				myLine = myLine.concat(fNameComp).concat(",");
+	   				arList.add(myLine);
+	   			}
+			       	myLine="";
+	    	}
+	    }	
+	}
  
     private void updateGUIWhenFinish() {
         display.asyncExec(new Runnable() {
@@ -214,80 +199,98 @@ public class ReadCsv extends Thread{
             @Override
             public void run() {
                 //Excel
-                try
-                {
-                	progressBar.setSelection(progressBar.getSelection() + 2);
-
-                	if (arList.size()>1)
-                	{
-	                	HSSFWorkbook hwb = new HSSFWorkbook();
-	                    HSSFSheet sheet = hwb.createSheet("new sheet");
-	                    for(int k=0;k<arList.size();k++)
-	                    {
-	                    	String myLine= arList.get(k).toString();            	
-	                    	String data[] = myLine.split(",");
-	                        HSSFRow row = sheet.createRow((short) 0+k);
-	                        for(int p=0;p<data.length;p++)
-	                        {
-	                            HSSFCell cell = row.createCell((short) p);
-	                            cell.setCellValue(data[p]);
-	                        }
-	                    }
-	                    Date myFecha = new Date();
-	            		SimpleDateFormat ft2 = new SimpleDateFormat ("YYYY_MM_DD_HHmmss"); 
-	            		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
-	            		ft2.format(myFecha);
-	            		
-	            		java.util.GregorianCalendar jCal = new java.util.GregorianCalendar();
-            		    java.util.GregorianCalendar jCal2 = new java.util.GregorianCalendar();
-            		    
-            		    jCal.setTime(myFechaIni);
-            		    jCal2.setTime(myFecha);
-            		    
-            		    String tiempo;
-            		    long diferencia = jCal2.getTime().getTime()-jCal.getTime().getTime();
-            		    if (diferencia / (1000 * 60) > 0){
-            		    	tiempo= (diferencia / (1000 * 60)) + " minutos transcurridos";
-            		    } else {
-            		    	tiempo= (diferencia / 1000) + " segundos transcurridos";
-            		    }
-	            		
-	            		
-	            		String fileN="/Extracto_"+ft2.format(myFecha)+".xls";
-	                    FileOutputStream fileOut = new FileOutputStream(myPath+fileN);
-	                    hwb.write(fileOut);
-	                    fileOut.close();
-	                    System.out.println("Your excel file has been generated"); 
-	                   try{ 
-	                     //definiendo la ruta en la propiedad file
-	                	   Desktop.getDesktop().open(new File(myPath+fileN));	                       
-	                     }catch(IOException e){
-	                        e.printStackTrace();
-	                     } 
-	                    
-	                    myFecha = new Date();
-	                    statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
-	                    statuslog=statuslog + "\nTiempo de Ejecución: "+ tiempo  ;
-	                    statuslog=statuslog + "\nArchivo generado: "+myPath+fileN;
-	                    myOutput.setText(statuslog);
-                	}
-                	else 
-                	{
-	                    Date myFecha = new Date();
-	            		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
-	                    statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
-	                    myOutput.setText(statuslog);
-                	}
-
+            	if (!cancel) {
+	                try
+	                {
+	                	progressBar.setSelection(progressBar.getSelection() + 2);
+	                	if (arList.size()>1)
+	                	{
+	
+		                	HSSFWorkbook hwb = new HSSFWorkbook();
+		                    HSSFSheet sheet = hwb.createSheet("new sheet");
+		                    for(int k=0;k<arList.size();k++)
+		                    {
+		                        if (cancel) {
+		                            break;
+		                        }
+		                    	String myLine= arList.get(k).toString();            	
+		                    	String data[] = myLine.split(",");
+		                        HSSFRow row = sheet.createRow((short) 0+k);
+		                        for(int p=0;p<data.length;p++)
+		                        {
+		                            HSSFCell cell = row.createCell((short) p);
+		                            cell.setCellValue(data[p]);
+		                        }
+		                    }
+		                    Date myFecha = new Date();
+		            		SimpleDateFormat ft2 = new SimpleDateFormat ("YYYY_MM_DD_HHmmss"); 
+		            		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
+		            		ft2.format(myFecha);
+		            		
+		            		java.util.GregorianCalendar jCal = new java.util.GregorianCalendar();
+	            		    java.util.GregorianCalendar jCal2 = new java.util.GregorianCalendar();
+	            		    
+	            		    jCal.setTime(myFechaIni);
+	            		    jCal2.setTime(myFecha);
+	            		    
+	            		    String tiempo;
+	            		    long diferencia = jCal2.getTime().getTime()-jCal.getTime().getTime();
+	            		    if (diferencia / (1000 * 60) > 0){
+	            		    	tiempo= (diferencia / (1000 * 60)) + " minutos transcurridos";
+	            		    } else {
+	            		    	tiempo= (diferencia / 1000) + " segundos transcurridos";
+	            		    }
+		            		
+		            		
+		            		String fileN="/Extracto_"+ft2.format(myFecha)+".xls";
+		                    FileOutputStream fileOut = new FileOutputStream(myPath+fileN);
+		                    hwb.write(fileOut);
+		                    fileOut.close();
+		                    System.out.println("Your excel file has been generated"); 
+		                   try{ 
+		                     //definiendo la ruta en la propiedad file
+		                	   Desktop.getDesktop().open(new File(myPath+fileN));	                       
+		                     }catch(IOException e){
+		                        e.printStackTrace();
+		                     } 
+		                    
+		                    myFecha = new Date();
+		                    String finalSize=size(countSize);
+    	                	statuslog=statuslog + "\n "+count+" Archivos Procesados - Tamaño: "+finalSize;
+		                    statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
+		                    statuslog=statuslog + "\nTiempo de Ejecución: "+ tiempo  ;
+		                    statuslog=statuslog + "\nArchivo generado: "+myPath+fileN;
+		                    myOutput.setText(statuslog);
+	                	}
+	                	else 
+	                	{
+		                    Date myFecha = new Date();
+		                    statuslog=statuslog + "\n - Ningun archivo procesado / sin información";
+		            		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
+		                    statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
+		                    myOutput.setText(statuslog);
+	                	}
+	
+	
+	                    progressBar.setVisible(false);
+	    				text1.setVisible(false);
+	    				lblArchivoLeido.setVisible(false);	
+	    				btnSalir.setVisible(false);
+	    			} catch ( Exception ex ) {
+	                    ex.printStackTrace();
+	                } //main method ends
+            	}            	
+	            if (cancel) {
+	            	Date myFecha = new Date();
+                    statuslog=statuslog + "\n - Proceso Cancelado";
+            		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
+                    statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
+                    myOutput.setText(statuslog);
                     progressBar.setVisible(false);
     				text1.setVisible(false);
     				lblArchivoLeido.setVisible(false);	
     				btnSalir.setVisible(false);
-    				
-                 
-                } catch ( Exception ex ) {
-                    ex.printStackTrace();
-                } //main method ends
+	            }  
             }
         });
     }
@@ -341,8 +344,8 @@ public class ReadCsv extends Thread{
     
 
 
-   /* public void cancel() {
+    public void cancel() {
         this.cancel = true;
-    }*/
+    }
 
 }

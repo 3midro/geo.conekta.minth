@@ -28,12 +28,12 @@ public class MainForm  {
 	String selected = "c:\\csv2extract\\";
 	
 	public static Label myOutput;
-	public static Text text1;
 	public static ProgressBar progressBar1;
 
     private ReadCsv myProcess = null;
 
 	String myPath=null;
+	private Text text1;
 	
 	/**
 	 * Launch the application.
@@ -67,7 +67,7 @@ public class MainForm  {
 	 * Create contents of the window.
 	 */
 	protected void createContents() {
-		shlExtraerTorqueY = new Shell();
+		shlExtraerTorqueY = new Shell(display,SWT.TITLE | SWT.CLOSE | SWT.BORDER);
 		shlExtraerTorqueY.setImage(SWTResourceManager.getImage(MainForm.class, "/geo/conekta/minth/ico48.ico"));
 		shlExtraerTorqueY.setSize(586, 321);
 		shlExtraerTorqueY.setText("Extraer Torque y \u00C1ngulo"); 
@@ -126,7 +126,7 @@ public class MainForm  {
         progressBar1.setBounds(337, 236, 115, 21); 
         
 		Label lblArchivoLeido = new Label(shlExtraerTorqueY, SWT.NONE);
-		lblArchivoLeido.setBounds(28, 240, 55, 15);
+		lblArchivoLeido.setBounds(28, 240, 303, 15);
 		lblArchivoLeido.setText("Abriendo");
 		lblArchivoLeido.setVisible(false);
 		
@@ -134,7 +134,9 @@ public class MainForm  {
 		btnSalir.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				System.exit(0);
+                if (myProcess != null) {
+                	myProcess.cancel();
+                }
 			}
 		});
 		btnSalir.setBounds(458, 234, 76, 25);
@@ -145,7 +147,7 @@ public class MainForm  {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				progressBar1.setVisible(true);
-				text1.setVisible(true);
+				text1.setVisible(false);
 				lblArchivoLeido.setVisible(true);	
 				btnSalir.setVisible(true);
 				myPath = txtExtraerDe.getText();				
@@ -159,11 +161,6 @@ public class MainForm  {
 		Label lblLog = new Label(shlExtraerTorqueY, SWT.NONE);
 		lblLog.setBounds(34, 76, 35, 15);
 		lblLog.setText("Log");
-		
-		text1 = new Text(shlExtraerTorqueY, SWT.BORDER);
-		text1.setEditable(false);
-		text1.setBounds(85, 236, 242, 21);
-		text1.setVisible(false);
 		
 
 		
@@ -187,5 +184,9 @@ public class MainForm  {
 			}
 		});
 		tltmManual.setText("Manual");
+		
+		text1 = new Text(shlExtraerTorqueY, SWT.BORDER);
+		text1.setBounds(160, 261, 76, 21);
+		text1.setVisible(false);
 	}
 }
