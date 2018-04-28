@@ -159,28 +159,28 @@ public class ReadCsv extends Thread{
 	    			while ((thisLine = myInput.readLine()) != null){
 	    				String strar[] = thisLine.split(";");
 	    				//usar astring y split
-	    				if (strar[0].equals("par de torsión perno_exterior_izq")) {
+	    				if (strar[0].equals("par de torsión perno_exterior_izq") || strar[0].equals("torque dowel pin_outside_left") || strar[0].equals("Drehmoment Stehbolzen_Aussen_Li") ) {
 	    						myLine=strar[1]+",";
 	    				}
-	    				if (strar[0].equals("ángulo perno_exterior_izq")) {
+	    				if (strar[0].equals("ángulo perno_exterior_izq") || strar[0].equals("angle dowel pin_outside_left") || strar[0].equals("Winkel Stehbolzen_Aussen_Li")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("par de torsión perno_interior_izq")) {
+	    				if (strar[0].equals("par de torsión perno_interior_izq") || strar[0].equals("torque dowel pin_inside_left") || strar[0].equals("Drehmoment Stehbolzen_Innen_Li")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("ángulo perno_interior_izq")) {
+	    				if (strar[0].equals("ángulo perno_interior_izq") || strar[0].equals("angle dowel pin_inside_left") || strar[0].equals("Winkel Stehbolzen_Innen_Li")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("par de torsión perno_interior_drch")) {
+	    				if (strar[0].equals("par de torsión perno_interior_drch") || strar[0].equals("torque dowel pin_inside_right") || strar[0].equals("Drehmoment Stehbolzen_Innen_Re")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("ángulo perno_interior_drch")) {
+	    				if (strar[0].equals("ángulo perno_interior_drch") || strar[0].equals("angle dowel pin_inside_right") || strar[0].equals("Winkel Stehbolzen_Innen_Re")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("par de torsión perno_exterior_drch")) {
+	    				if (strar[0].equals("par de torsión perno_exterior_drch") || strar[0].equals("torque dowel pin_outside_right") || strar[0].equals("Drehmoment Stehbolzen_Aussen_Re")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("ángulo perno_exterior_drch")) {
+	    				if (strar[0].equals("ángulo perno_exterior_drch") || strar[0].equals("angle dowel pin_outside_right") || strar[0].equals("Winkel Stehbolzen_Aussen_Re")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
 	    				i++;

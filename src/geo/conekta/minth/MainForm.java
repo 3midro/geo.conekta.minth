@@ -75,7 +75,7 @@ public class MainForm  {
 		txtExtraerDe = new Text(shlExtraerTorqueY, SWT.BORDER);
 		txtExtraerDe.setEditable(false);
 		txtExtraerDe.setEnabled(false);
-		txtExtraerDe.setText("C:/csv2Extract");
+		txtExtraerDe.setText("C:\\csv2extract");
 		txtExtraerDe.setBounds(75, 38, 336, 21);
 		
 		Label lblNewLabel = new Label(shlExtraerTorqueY, SWT.NONE);
@@ -116,10 +116,9 @@ public class MainForm  {
 				if (selected!= null)
 					txtExtraerDe.setText(selected);
 				else
-					txtExtraerDe.setText("C:\\csv2extract");
-				System.out.println(selected);
-				
-			}
+					txtExtraerDe.setText(txtExtraerDe.getText());
+					System.out.println(selected);
+				}
 		});
 		btnCambiarRuta.setBounds(417, 36, 35, 25);
 		btnCambiarRuta.setText("...");
