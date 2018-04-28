@@ -113,8 +113,12 @@ public class MainForm  {
 				fd.setText("Seleccionar");
 				fd.setFilterPath("C:\\csv2extract");
 				selected = fd.open();
-				txtExtraerDe.setText(selected);
+				if (selected!= null)
+					txtExtraerDe.setText(selected);
+				else
+					txtExtraerDe.setText("C:\\csv2extract");
 				System.out.println(selected);
+				
 			}
 		});
 		btnCambiarRuta.setBounds(417, 36, 35, 25);
