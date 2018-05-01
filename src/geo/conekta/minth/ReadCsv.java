@@ -377,5 +377,3 @@ public class ReadCsv extends Thread{
 	       }
 
 	   }
-	    
-}
