@@ -256,11 +256,18 @@ public class ReadCsv extends Thread{
 	                           
 	                           String tiempo;
 	                           long diferencia = jCal2.getTime().getTime()-jCal.getTime().getTime();
-	                           if (diferencia / (1000 * 60) > 0){
+	                           
+	                           int hora = (int) (diferencia / 3600);
+	                           int minu = (int) ((diferencia - (3600 * hora)) / 60);
+	                           int seg = (int) (diferencia - ((hora * 3600)+(minu * 60)));
+	                           
+	                           tiempo = hora + "horas " + minu + "minutos " + seg + "segundos.";
+	                           
+	                           /*if (diferencia / (1000 * 60) > 0){
 	                             tiempo= (diferencia / (1000 * 60)) + " minutos transcurridos";
 	                           } else {
 	                             tiempo= (diferencia / 1000) + " segundos transcurridos";
-	                           }
+	                           }*/
 	                         
 	                         
 	                         String fileN="/Extracto_"+ft2.format(myFecha)+".xlsx";
