@@ -15,6 +15,10 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -104,6 +108,8 @@ public class ReadCsv extends Thread{
    	 			progressBar.setMaximum(count);
    	 			progressBar.setSelection(value);
             }
+                		String fNameComp = ficheros[x].getAbsolutePath();
+                		FileInputStream fis;
     	});
     }
  
@@ -126,9 +132,9 @@ public class ReadCsv extends Thread{
 		
 	    //ArrayList al = new ArrayList();
 	    int i=0;
-	    //añade la cabecera
+	    //aï¿½ade la cabecera
 	    if (count == 0) {
-	    	arList.add("par de torsión perno_exterior_izq,ángulo perno_exterior_izq,par de torsión perno_interior_izq,ángulo perno_interior_izq,par de torsión perno_interior_drch,ángulo perno_interior_drch,par de torsión perno_exterior_drch,ángulo perno_exterior_drch,ruta archivo");
+	    	arList.add("par de torsiï¿½n perno_exterior_izq,ï¿½ngulo perno_exterior_izq,par de torsiï¿½n perno_interior_izq,ï¿½ngulo perno_interior_izq,par de torsiï¿½n perno_interior_drch,ï¿½ngulo perno_interior_drch,par de torsiï¿½n perno_exterior_drch,ï¿½ngulo perno_exterior_drch,ruta archivo");
 	    }
 	    for (int x = 0; x < ficheros.length; x++) {
 	        if (cancel) {
@@ -159,28 +165,28 @@ public class ReadCsv extends Thread{
 	    			while ((thisLine = myInput.readLine()) != null){
 	    				String strar[] = thisLine.split(";");
 	    				//usar astring y split
-	    				if (strar[0].equals("par de torsión perno_exterior_izq") || strar[0].equals("torque dowel pin_outside_left") || strar[0].equals("Drehmoment Stehbolzen_Aussen_Li") ) {
+	    				if (strar[0].equals("par de torsiï¿½n perno_exterior_izq") || strar[0].equals("torque dowel pin_outside_left") || strar[0].equals("Drehmoment Stehbolzen_Aussen_Li") ) {
 	    						myLine=strar[1]+",";
 	    				}
-	    				if (strar[0].equals("ángulo perno_exterior_izq") || strar[0].equals("angle dowel pin_outside_left") || strar[0].equals("Winkel Stehbolzen_Aussen_Li")) {
+	    				if (strar[0].equals("ï¿½ngulo perno_exterior_izq") || strar[0].equals("angle dowel pin_outside_left") || strar[0].equals("Winkel Stehbolzen_Aussen_Li")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("par de torsión perno_interior_izq") || strar[0].equals("torque dowel pin_inside_left") || strar[0].equals("Drehmoment Stehbolzen_Innen_Li")) {
+	    				if (strar[0].equals("par de torsiï¿½n perno_interior_izq") || strar[0].equals("torque dowel pin_inside_left") || strar[0].equals("Drehmoment Stehbolzen_Innen_Li")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("ángulo perno_interior_izq") || strar[0].equals("angle dowel pin_inside_left") || strar[0].equals("Winkel Stehbolzen_Innen_Li")) {
+	    				if (strar[0].equals("ï¿½ngulo perno_interior_izq") || strar[0].equals("angle dowel pin_inside_left") || strar[0].equals("Winkel Stehbolzen_Innen_Li")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("par de torsión perno_interior_drch") || strar[0].equals("torque dowel pin_inside_right") || strar[0].equals("Drehmoment Stehbolzen_Innen_Re")) {
+	    				if (strar[0].equals("par de torsiï¿½n perno_interior_drch") || strar[0].equals("torque dowel pin_inside_right") || strar[0].equals("Drehmoment Stehbolzen_Innen_Re")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("ángulo perno_interior_drch") || strar[0].equals("angle dowel pin_inside_right") || strar[0].equals("Winkel Stehbolzen_Innen_Re")) {
+	    				if (strar[0].equals("ï¿½ngulo perno_interior_drch") || strar[0].equals("angle dowel pin_inside_right") || strar[0].equals("Winkel Stehbolzen_Innen_Re")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("par de torsión perno_exterior_drch") || strar[0].equals("torque dowel pin_outside_right") || strar[0].equals("Drehmoment Stehbolzen_Aussen_Re")) {
+	    				if (strar[0].equals("par de torsiï¿½n perno_exterior_drch") || strar[0].equals("torque dowel pin_outside_right") || strar[0].equals("Drehmoment Stehbolzen_Aussen_Re")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
-	    				if (strar[0].equals("ángulo perno_exterior_drch") || strar[0].equals("angle dowel pin_outside_right") || strar[0].equals("Winkel Stehbolzen_Aussen_Re")) {
+	    				if (strar[0].equals("ï¿½ngulo perno_exterior_drch") || strar[0].equals("angle dowel pin_outside_right") || strar[0].equals("Winkel Stehbolzen_Aussen_Re")) {
 	    					myLine=myLine+strar[1]+",";
 	    				}
 	    				i++;
@@ -261,16 +267,16 @@ public class ReadCsv extends Thread{
 		                    
 		                    myFecha = new Date();
 		                    String finalSize=size(countSize);
-    	                	statuslog=statuslog + "\n "+count+" Archivos Procesados - Tamaño: "+finalSize;
+    	                	statuslog=statuslog + "\n "+count+" Archivos Procesados - Tamaï¿½o: "+finalSize;
 		                    statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
-		                    statuslog=statuslog + "\nTiempo de Ejecución: "+ tiempo  ;
+		                    statuslog=statuslog + "\nTiempo de Ejecuciï¿½n: "+ tiempo  ;
 		                    statuslog=statuslog + "\nArchivo generado: "+myPath+fileN;
 		                    myOutput.setText(statuslog);
 	                	}
 	                	else 
 	                	{
 		                    Date myFecha = new Date();
-		                    statuslog=statuslog + "\n - Ningun archivo procesado / sin información";
+		                    statuslog=statuslog + "\n - Ningun archivo procesado / sin informaciï¿½n";
 		            		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
 		                    statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
 		                    myOutput.setText(statuslog);
