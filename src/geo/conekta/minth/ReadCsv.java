@@ -44,6 +44,7 @@ public class ReadCsv extends Thread{
     static String statuslog;
     static int progressC;
     String myLine="";
+    static ArrayList myLineArr = new ArrayList(); 
     int totalCount;
    	int count=0;
    	int countSize=0;
@@ -87,6 +88,7 @@ public class ReadCsv extends Thread{
             @Override
             public void run() {
             	arList = new ArrayList();
+            	myLineArr = new ArrayList();
         		progressBar.setSelection(0);
             	myFechaIni = new Date();
         		SimpleDateFormat ft = new SimpleDateFormat ("hh:mm:ss a");
@@ -162,33 +164,45 @@ public class ReadCsv extends Thread{
 	    			System.out.println(fName);
 	    			fis = new FileInputStream(fName);
 	    			DataInputStream myInput = new DataInputStream(fis);
+	    			myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");
 	    			while ((thisLine = myInput.readLine()) != null){
 	    				String strar[] = thisLine.split(";");
 	    				//usar astring y split
-	    				if (strar[0].equals("par de torsi�n perno_exterior_izq") || strar[0].equals("torque dowel pin_outside_left") || strar[0].equals("Drehmoment Stehbolzen_Aussen_Li") ) {
+	    				if (strar.length == 2) { // si puede partir la cadena es porque hay m�s de 2 valores
+	    					if (strar[0].equals("par de torsi�n perno_exterior_izq") || strar[0].equals("torque dowel pin_outside_left") || strar[0].equals("Drehmoment Stehbolzen_Aussen_Li") ) {
 	    						myLine=strar[1]+",";
+	    						myLineArr.set(0,strar[1]);
+		    				}
+		    				if (strar[0].equals("�ngulo perno_exterior_izq") || strar[0].equals("angle dowel pin_outside_left") || strar[0].equals("Winkel Stehbolzen_Aussen_Li")) {
+		    					myLine=myLine+strar[1]+",";
+		    					myLineArr.set(1,strar[1]);
+		    				}
+		    				if (strar[0].equals("par de torsi�n perno_interior_izq") || strar[0].equals("torque dowel pin_inside_left") || strar[0].equals("Drehmoment Stehbolzen_Innen_Li")) {
+		    					myLine=myLine+strar[1]+",";
+		    					myLineArr.set(2,strar[1]);
+		    				}
+		    				if (strar[0].equals("�ngulo perno_interior_izq") || strar[0].equals("angle dowel pin_inside_left") || strar[0].equals("Winkel Stehbolzen_Innen_Li")) {
+		    					myLine=myLine+strar[1]+",";
+		    					myLineArr.set(3,strar[1]);
+		    				}
+		    				if (strar[0].equals("par de torsi�n perno_interior_drch") || strar[0].equals("torque dowel pin_inside_right") || strar[0].equals("Drehmoment Stehbolzen_Innen_Re")) {
+		    					myLine=myLine+strar[1]+",";
+		    					myLineArr.set(4,strar[1]);
+		    				}
+		    				if (strar[0].equals("�ngulo perno_interior_drch") || strar[0].equals("angle dowel pin_inside_right") || strar[0].equals("Winkel Stehbolzen_Innen_Re")) {
+		    					myLine=myLine+strar[1]+",";
+		    					myLineArr.set(5,strar[1]);
+		    				}
+		    				if (strar[0].equals("par de torsi�n perno_exterior_drch") || strar[0].equals("torque dowel pin_outside_right") || strar[0].equals("Drehmoment Stehbolzen_Aussen_Re")) {
+		    					myLine=myLine+strar[1]+",";
+		    					myLineArr.set(6,strar[1]);
+		    				}
+		    				if (strar[0].equals("�ngulo perno_exterior_drch") || strar[0].equals("angle dowel pin_outside_right") || strar[0].equals("Winkel Stehbolzen_Aussen_Re")) {
+		    					myLine=myLine+strar[1]+",";
+		    					myLineArr.set(7,strar[1]);
+		    				}
 	    				}
-	    				if (strar[0].equals("�ngulo perno_exterior_izq") || strar[0].equals("angle dowel pin_outside_left") || strar[0].equals("Winkel Stehbolzen_Aussen_Li")) {
-	    					myLine=myLine+strar[1]+",";
-	    				}
-	    				if (strar[0].equals("par de torsi�n perno_interior_izq") || strar[0].equals("torque dowel pin_inside_left") || strar[0].equals("Drehmoment Stehbolzen_Innen_Li")) {
-	    					myLine=myLine+strar[1]+",";
-	    				}
-	    				if (strar[0].equals("�ngulo perno_interior_izq") || strar[0].equals("angle dowel pin_inside_left") || strar[0].equals("Winkel Stehbolzen_Innen_Li")) {
-	    					myLine=myLine+strar[1]+",";
-	    				}
-	    				if (strar[0].equals("par de torsi�n perno_interior_drch") || strar[0].equals("torque dowel pin_inside_right") || strar[0].equals("Drehmoment Stehbolzen_Innen_Re")) {
-	    					myLine=myLine+strar[1]+",";
-	    				}
-	    				if (strar[0].equals("�ngulo perno_interior_drch") || strar[0].equals("angle dowel pin_inside_right") || strar[0].equals("Winkel Stehbolzen_Innen_Re")) {
-	    					myLine=myLine+strar[1]+",";
-	    				}
-	    				if (strar[0].equals("par de torsi�n perno_exterior_drch") || strar[0].equals("torque dowel pin_outside_right") || strar[0].equals("Drehmoment Stehbolzen_Aussen_Re")) {
-	    					myLine=myLine+strar[1]+",";
-	    				}
-	    				if (strar[0].equals("�ngulo perno_exterior_drch") || strar[0].equals("angle dowel pin_outside_right") || strar[0].equals("Winkel Stehbolzen_Aussen_Re")) {
-	    					myLine=myLine+strar[1]+",";
-	    				}
+	    				
 	    				i++;
 	    			}
 	    		} catch (IOException e) {
@@ -197,9 +211,13 @@ public class ReadCsv extends Thread{
 	    		}
 	   			if (!myLine.equals("")) {
 	   				myLine = myLine.concat(fNameComp).concat(",");
-	   				arList.add(myLine);
+	   				myLineArr.set(8,fNameComp);
+	   				//arList.add(myLine);
+	   				arList.add(myLineArr.toString().replace("[", "").replace("]", "").trim());
 	   			}
 			       	myLine="";
+			       	myLineArr.clear();
+			       	myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");myLineArr.add("");
 	    	}
 	    }	
 	}
@@ -217,8 +235,10 @@ public class ReadCsv extends Thread{
 	                	if (arList.size()>1)
 	                	{
 	
-		                	HSSFWorkbook hwb = new HSSFWorkbook();
-		                    HSSFSheet sheet = hwb.createSheet("new sheet");
+		                	int hojas = 1;
+		                	int columnas = 0;
+	                		HSSFWorkbook hwb = new HSSFWorkbook();
+		                    HSSFSheet sheet = hwb.createSheet("sheet " + hojas);
 		                    for(int k=0;k<arList.size();k++)
 		                    {
 		                        if (cancel) {
@@ -226,7 +246,16 @@ public class ReadCsv extends Thread{
 		                        }
 		                    	String myLine= arList.get(k).toString();            	
 		                    	String data[] = myLine.split(",");
-		                        HSSFRow row = sheet.createRow((short) 0+k);
+		                        //crea una nueva hoja si llega al limite
+		                    	if (columnas == 65535) {
+		                    		hojas++;
+		                    		sheet = hwb.createSheet("sheet " + hojas);
+		                    		columnas = 0;
+		                    	}
+		                    	
+		                    	//HSSFRow row = sheet.createRow((short) 0+k);
+		                    	HSSFRow row = sheet.createRow((short) 0+columnas);
+		                    	columnas++;
 		                        for(int p=0;p<data.length;p++)
 		                        {
 		                            HSSFCell cell = row.createCell((short) p);
