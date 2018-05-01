@@ -33,7 +33,7 @@ public class ReadCsv extends Thread{
 	  private Label lblArchivoLeido;
 	  private Date myFechaIni;
 	  private boolean cancel;
-	  
+      String[] linea = new String[8];	  
 	  
 	    static ArrayList arList = new ArrayList();
 	    static String statuslog;
@@ -156,7 +156,6 @@ public class ReadCsv extends Thread{
 	                try {
 	                  System.out.println(fName);
 	                  fis = new FileInputStream(fName);
-	                  String[] linea = new String[8];
 	                  linea[0] = ",";linea[1] = ",";linea[2] = ",";linea[3] = ",";linea[4] = ",";linea[5] = ",";linea[6] = ",";linea[7] = ",";
 	                  DataInputStream myInput = new DataInputStream(fis);
 	                  while ((thisLine = myInput.readLine()) != null){
