@@ -12,6 +12,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Stream;
+
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -219,9 +224,9 @@ public class ReadCsv extends Thread{
 	                       if (arList.size()>1)
 	                       {
 	     
-	                         XSSFWorkbook hwb = new XSSFWorkbook();
-	                         XSSFSheet sheet = hwb.createSheet("Sheet" + hojas);
-	                         
+	                         SXSSFWorkbook hwb = new SXSSFWorkbook();
+	                         SXSSFSheet sheet = hwb.createSheet("Sheet" + hojas);
+	              
 	                         for(int k=0;k<arList.size();k++)
 	                         {
 	                             if (cancel) {
@@ -235,13 +240,14 @@ public class ReadCsv extends Thread{
 	                               hojas++;
 	                                 sheet = hwb.createSheet("Sheet " + hojas);
 	                                 rows = 0;
+
 	                             }
-	                             XSSFRow row = sheet.createRow((short) 0+rows);
+	                             SXSSFRow row = sheet.createRow((short) 0+rows);
 	                             rows++;
 	                                  
 	                             for(int p=0;p<data.length;p++)
 	                             {
-	                                 XSSFCell cell = row.createCell((short) p);
+	                                 SXSSFCell cell = row.createCell((short) p);
 	                                 cell.setCellValue(data[p]);
 	                             }
 	                         }
@@ -269,9 +275,9 @@ public class ReadCsv extends Thread{
 	                           
 	                          tiempo = hora + " horas " + minu + " minutos " + seg + " segundos.";
 	                           
-	                         String fileN="/Extracto_"+ft2.format(myFecha)+".xlsx";
-	                             FileOutputStream fileOut = new FileOutputStream(myPath+fileN);
-	                             hwb.write(fileOut);
+		                         String fileN="/Extracto_"+ft2.format(myFecha)+".xlsx";
+		                             FileOutputStream fileOut = new FileOutputStream(myPath+fileN);
+		                             hwb.write(fileOut);
 	                             fileOut.close();
 	                             //hwb.close();
 	                             System.out.println("Your excel file has been generated"); 
