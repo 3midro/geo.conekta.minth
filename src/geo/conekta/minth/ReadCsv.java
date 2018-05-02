@@ -249,27 +249,24 @@ public class ReadCsv extends Thread{
 	                         ft2.format(myFecha);
 	                         
 	                         java.util.GregorianCalendar jCal = new java.util.GregorianCalendar();
-	                           java.util.GregorianCalendar jCal2 = new java.util.GregorianCalendar();
+	                         java.util.GregorianCalendar jCal2 = new java.util.GregorianCalendar();
 	                           
-	                           jCal.setTime(myFechaIni);
-	                           jCal2.setTime(myFecha);
+	                         jCal.setTime(myFechaIni);
+	                         jCal2.setTime(myFecha);
 	                           
-	                           String tiempo;
-	                           long diferencia = jCal2.getTime().getTime()-jCal.getTime().getTime();
+	                         String tiempo;
+	                         long diferencia = (jCal2.getTime().getTime()-jCal.getTime().getTime()) / 1000;
+	                         long hora = 0;
+	                         long minu = 0;
+	                         long seg = 0;
+	                         if (diferencia > 3600)
+	                        	 hora = (diferencia / 3600);
+	                         if ((diferencia - (3600 * hora)) > 60)
+	                        	 minu = ((diferencia - (3600 * hora)) / 60);
+	                          seg = (diferencia - ((hora * 3600)+(minu * 60)));
 	                           
-	                           int hora = (int) (diferencia / 3600);
-	                           int minu = (int) ((diferencia - (3600 * hora)) / 60);
-	                           int seg = (int) (diferencia - ((hora * 3600)+(minu * 60)));
+	                          tiempo = hora + " horas " + minu + " minutos " + seg + " segundos.";
 	                           
-	                           tiempo = hora + "horas " + minu + "minutos " + seg + "segundos.";
-	                           
-	                           /*if (diferencia / (1000 * 60) > 0){
-	                             tiempo= (diferencia / (1000 * 60)) + " minutos transcurridos";
-	                           } else {
-	                             tiempo= (diferencia / 1000) + " segundos transcurridos";
-	                           }*/
-	                         
-	                         
 	                         String fileN="/Extracto_"+ft2.format(myFecha)+".xlsx";
 	                             FileOutputStream fileOut = new FileOutputStream(myPath+fileN);
 	                             hwb.write(fileOut);
@@ -283,7 +280,7 @@ public class ReadCsv extends Thread{
 	                                 e.printStackTrace();
 	                              } 
 	                              
-	                              myFecha = new Date();
+	                              //myFecha = new Date();
 	                              String finalSize=size(countSize);
 	                              statuslog=statuslog + "\n "+count+" Archivos Procesados - Tamaño: "+finalSize;
 	                              statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
