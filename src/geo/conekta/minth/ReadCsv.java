@@ -38,7 +38,8 @@ public class ReadCsv extends Thread{
 	  private Label lblArchivoLeido;
 	  private Date myFechaIni;
 	  private boolean cancel;
-	  String[] linea;      	  
+	  private String[] linea;
+	  private boolean flagHeader;
 	  
 	    static ArrayList arList = new ArrayList();
 	    static String statuslog;
@@ -60,6 +61,7 @@ public class ReadCsv extends Thread{
 	        this.lblArchivoLeido = lblArchivoLeido;
 	        this.btnProcesar = btnProcesar;
 	        this.btnCambiarRuta = btnCambiarRuta;
+	        this.flagHeader = false;
 	    }
 
 	    @Override
@@ -133,8 +135,9 @@ public class ReadCsv extends Thread{
 	        //ArrayList al = new ArrayList();
 	        int i=0;
 	        //añade la cabecera
-	        if (count == 0) {
+	        if (!flagHeader) {
 	          arList.add("par de torsión perno_exterior_izq,ángulo perno_exterior_izq,par de torsión perno_interior_izq,ángulo perno_interior_izq,par de torsión perno_interior_drch,ángulo perno_interior_drch,par de torsión perno_exterior_drch,ángulo perno_exterior_drch,ruta archivo");
+	          flagHeader = true;
 	        }
 	        for (int x = 0; x < ficheros.length; x++) {
 	            if (cancel) {
