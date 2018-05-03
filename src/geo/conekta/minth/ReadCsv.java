@@ -270,13 +270,19 @@ public class ReadCsv extends Thread{
 	                         long hora = 0;
 	                         long minu = 0;
 	                         long seg = 0;
-	                         if (diferencia > 3600)
+	                         tiempo ="";
+	                         if (diferencia > 3600) {
 	                        	 hora = (diferencia / 3600);
-	                         if ((diferencia - (3600 * hora)) > 60)
+	                        	 tiempo = tiempo + hora + " hrs";
+	                         }
+	                        	 
+	                         if ((diferencia - (3600 * hora)) > 60) {
 	                        	 minu = ((diferencia - (3600 * hora)) / 60);
+	                        	 tiempo = tiempo + " " + minu + " min ";
+	                         }
+	                        	 
 	                          seg = (diferencia - ((hora * 3600)+(minu * 60)));
-	                           
-	                          tiempo = hora + " horas " + minu + " minutos " + seg + " segundos.";
+	                          tiempo = tiempo  + seg + " seg.";
 	                           
 		                         String fileN="/Extracto_"+ft2.format(myFecha)+".xlsx";
 		                             FileOutputStream fileOut = new FileOutputStream(myPath+fileN);
@@ -291,11 +297,12 @@ public class ReadCsv extends Thread{
 	                                 e.printStackTrace();
 	                              } 
 	                              
-	                              //myFecha = new Date();
-	                              String finalSize=size(countSize);
-	                              statuslog=statuslog + "\n "+count+" Archivos Procesados - Tamaño: "+finalSize;
-	                              statuslog=statuslog + "\nHora Final: "+ft.format(myFecha);   
+	                              statuslog=statuslog + " |  Hora Final: "+ft.format(myFecha);   
 	                              statuslog=statuslog + "\nTiempo de Ejecución: "+ tiempo  ;
+	                               
+	                             //myFecha = new Date();
+	                              String finalSize=size(countSize);
+	                              statuslog=statuslog + "\n"+count+" Archivos Procesados | Tamaño: "+finalSize;
 	                              statuslog=statuslog + "\nArchivo generado: "+myPath+fileN;
 	                              myOutput.setText(statuslog);
 	                          }
