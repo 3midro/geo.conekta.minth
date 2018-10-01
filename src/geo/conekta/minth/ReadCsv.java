@@ -163,41 +163,49 @@ public class ReadCsv extends Thread {
 							if (strar[0].equals("par de torsión perno_exterior_izq")
 									|| strar[0].equals("torque dowel pin_outside_left")
 									|| strar[0].equals("Drehmoment Stehbolzen_Aussen_Li")) {
+								strar[1] = strar[1].replaceAll(",",".");
 								linea[0] = strar[1] + ",";
 							}
 							if (strar[0].equals("ángulo perno_exterior_izq")
 									|| strar[0].equals("angle dowel pin_outside_left")
 									|| strar[0].equals("Winkel Stehbolzen_Aussen_Li")) {
+								strar[1] = strar[1].replaceAll(",",".");
 								linea[1] = strar[1] + ",";
 							}
 							if (strar[0].equals("par de torsión perno_interior_izq")
 									|| strar[0].equals("torque dowel pin_inside_left")
 									|| strar[0].equals("Drehmoment Stehbolzen_Innen_Li")) {
+								strar[1] = strar[1].replaceAll(",",".");
 								linea[2] = strar[1] + ",";
 							}
 							if (strar[0].equals("ángulo perno_interior_izq")
 									|| strar[0].equals("angle dowel pin_inside_left")
 									|| strar[0].equals("Winkel Stehbolzen_Innen_Li")) {
+								strar[1] = strar[1].replaceAll(",",".");
 								linea[3] = strar[1] + ",";
 							}
 							if (strar[0].equals("par de torsión perno_interior_drch")
 									|| strar[0].equals("torque dowel pin_inside_right")
 									|| strar[0].equals("Drehmoment Stehbolzen_Innen_Re")) {
+								strar[1] = strar[1].replaceAll(",",".");
 								linea[4] = strar[1] + ",";
 							}
 							if (strar[0].equals("ángulo perno_interior_drch")
 									|| strar[0].equals("angle dowel pin_inside_right")
 									|| strar[0].equals("Winkel Stehbolzen_Innen_Re")) {
+								strar[1] = strar[1].replaceAll(",",".");
 								linea[5] = strar[1] + ",";
 							}
 							if (strar[0].equals("par de torsión perno_exterior_drch")
 									|| strar[0].equals("torque dowel pin_outside_right")
 									|| strar[0].equals("Drehmoment Stehbolzen_Aussen_Re")) {
+								strar[1] = strar[1].replaceAll(",",".");
 								linea[6] = strar[1] + ",";
 							}
 							if (strar[0].equals("ángulo perno_exterior_drch")
 									|| strar[0].equals("angle dowel pin_outside_right")
 									|| strar[0].equals("Winkel Stehbolzen_Aussen_Re")) {
+								strar[1] = strar[1].replaceAll(",",".");
 								linea[7] = strar[1] + ",";
 							}
 							i++;
@@ -205,6 +213,7 @@ public class ReadCsv extends Thread {
 					}
 					myLine = myLine.concat(linea[0]).concat(linea[1]).concat(linea[2]).concat(linea[3]).concat(linea[4])
 							.concat(linea[5]).concat(linea[6]).concat(linea[7]);
+					System.out.println(myLine);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
